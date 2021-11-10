@@ -8,7 +8,6 @@ select pokemons.name as name, types.name as primary_type from pokemons join type
 #What is Rufflet's secondary type?
 select types.name as secondary_type from pokemons join types on pokemons.secondary_type = types.id where pokemons.name = 'Rufflet';
 
-
 #What are the names of the pokemon that belong to the trainer with trainerID 303?
 select p.name as pokemon_name from pokemons p join pokemon_trainer pt on p.id = pt.pokemon_id where pt.trainerID = 303;
 
@@ -20,9 +19,12 @@ select t.name as primary_type, count(p.id) as num_of_pokemon from pokemons p joi
 
 #How many pokemon at level 100 does each trainer with at least one level 100 pokemone have? (Hint: your query should not display a trainer
 
-select count(DISTINCT(pokemon_id)) from pokemon_trainer where trainerID IN (select trainerID from pokemon_trainer  where pokelevel = 100) and pokelevel = 100;
+# INCORRECT - Also DISTINCT runs slower - select count(DISTINCT(pokemon_id)) from pokemon_trainer where trainerID IN (select trainerID from pokemon_trainer  where pokelevel = 100) and pokelevel = 100;
+
+select trainerID, count(pokemon_id) num_pokemon from pokemon_trainer where pokelevel = 100 group by trainerID order by count(pokemon_id);
 
 #How many pokemon only belong to one trainer and no other?
 
+select pokemon_id, count(trainerID) from pokemon_trainer group by pokemon_id having count(trainerid) = 1;
 
-
+select p.name from pokemon_trainer pt join pokemons p on p.id = pt.pokemon_id group by pokemon_id having count(trainerID) = 1;
